@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
+
 <body>
     <div class="app-container">
         <header>
@@ -43,6 +45,7 @@
                     <span class="material-icons-round">mic</span>
                 </button>
             </div>
+            <input type="datetime-local" id="task-deadline" class="date-input" title="Set Deadline">
             <button id="add-btn" class="primary-btn">
                 <span class="material-icons-round">add</span>
             </button>
@@ -52,15 +55,48 @@
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="active">Active</button>
             <button class="filter-btn" data-filter="completed">Completed</button>
+            <button id="calendar-btn" class="filter-btn" style="margin-left: auto;">
+                <span class="material-icons-round"
+                    style="vertical-align: middle; font-size: 18px;">calendar_today</span>
+            </button>
         </div>
 
         <ul id="task-list" class="task-list">
             <!-- Tasks will be injected here -->
         </ul>
-        
+
         <div id="empty-state" class="empty-state hidden">
             <span class="material-icons-round">assignment_turned_in</span>
             <p>All cleaned up! Take a break.</p>
+        </div>
+    </div>
+
+    <!-- Calendar Modal -->
+    <div id="calendar-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="calendar-month-year">Month Year</h2>
+                <div class="calendar-nav">
+                    <button id="prev-month" class="icon-btn"><span
+                            class="material-icons-round">chevron_left</span></button>
+                    <button id="next-month" class="icon-btn"><span
+                            class="material-icons-round">chevron_right</span></button>
+                    <button id="close-calendar" class="icon-btn"><span
+                            class="material-icons-round">close</span></button>
+                </div>
+            </div>
+            <div class="calendar-grid-header">
+                <div>Su</div>
+                <div>Mo</div>
+                <div>Tu</div>
+                <div>We</div>
+                <div>Th</div>
+                <div>Fr</div>
+                <div>Sa</div>
+            </div>
+            <div id="calendar-grid" class="calendar-grid">
+                <!-- Days injected here -->
+            </div>
         </div>
     </div>
 
@@ -89,4 +125,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
