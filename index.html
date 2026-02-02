@@ -16,49 +16,13 @@
 <body>
     <div class="app-container">
         <header>
-            <div class="header-top">
-                <div class="date-display">
-                    <span id="current-day">Monday</span>
-                    <span id="current-date">October 24</span>
-                </div>
-                <div class="user-stats">
-                    <div class="stat-item" id="level-display" title="Current Level">
-                        <span class="stat-label">LVL</span>
-                        <span class="stat-value" id="level-value">1</span>
-                    </div>
-                    <div class="stat-item" id="streak-display" title="Daily Streak">
-                        <span class="stat-icon">🔥</span>
-                        <span class="stat-value" id="streak-value">0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="xp-bar-container" title="XP Progress">
-                <div class="xp-bar-fill" id="xp-bar" style="width: 0%"></div>
-            </div>
-            <h1>My Tasks</h1>
+            <h1>To-Do</h1>
         </header>
 
         <div class="input-section">
-            <div class="input-wrapper">
-                <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
-                <button id="voice-btn" class="icon-btn" title="Voice Input">
-                    <span class="material-icons-round">mic</span>
-                </button>
-            </div>
+            <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
             <input type="datetime-local" id="task-deadline" class="date-input" title="Set Deadline">
-            <button id="add-btn" class="primary-btn">
-                <span class="material-icons-round">add</span>
-            </button>
-        </div>
-
-        <div class="filter-section">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="active">Active</button>
-            <button class="filter-btn" data-filter="completed">Completed</button>
-            <button id="calendar-btn" class="filter-btn" style="margin-left: auto;">
-                <span class="material-icons-round"
-                    style="vertical-align: middle; font-size: 18px;">calendar_today</span>
-            </button>
+            <button id="add-btn" class="primary-btn">Add</button>
         </div>
 
         <ul id="task-list" class="task-list">
@@ -66,8 +30,22 @@
         </ul>
 
         <div id="empty-state" class="empty-state hidden">
-            <span class="material-icons-round">assignment_turned_in</span>
-            <p>All cleaned up! Take a break.</p>
+            <p>No tasks yet.</p>
+        </div>
+
+        <!-- Subtle Footer Controls -->
+        <div class="footer-controls">
+            <button id="calendar-btn" class="icon-btn" title="Calendar">
+                <span class="material-icons-round">calendar_today</span>
+            </button>
+            <button id="voice-btn" class="icon-btn" title="Voice Input">
+                <span class="material-icons-round">mic</span>
+            </button>
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
         </div>
     </div>
 

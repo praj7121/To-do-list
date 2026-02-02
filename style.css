@@ -1,14 +1,25 @@
 :root {
-    --bg-color: #ffffff;
+    /* Palette from Design Brief */
+    --bg-color: #f8fafc;
+    /* Light neutral / Off-white */
     --card-bg: #ffffff;
-    --text-main: #333333;
-    --text-muted: #666666;
-    --primary-color: #2563eb;
-    /* Standard Blue */
-    --border-color: #e5e5e5;
-    --danger-color: #dc2626;
-    --success-color: #16a34a;
+    /* Pure white */
+    --text-primary: #334155;
+    /* Dark gray */
+    --text-secondary: #64748b;
+    /* Muted gray */
+    --accent-color: #64748b;
+    /* Muted Blue/Grey (Slate-500) */
+    --accent-hover: #475569;
+    --border-color: #e2e8f0;
+    /* Light border */
+    --danger-color: #ef4444;
+    /* Soft Red for delete/overdue */
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    /* Soft shadow */
+    --radius: 12px;
     --font-family: 'Inter', sans-serif;
+    --transition-speed: 0.2s;
 }
 
 * {
@@ -19,253 +30,307 @@
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-main);
+    color: var(--text-primary);
     font-family: var(--font-family);
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding-top: 50px;
+    align-items: center;
+    /* Full screen centered */
+    padding: 20px;
 }
 
 .app-container {
     width: 100%;
     max-width: 500px;
-    padding: 20px;
+    /* Medium width */
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 40px;
+    /* Comfortable internal spacing */
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    transition: transform var(--transition-speed);
 }
 
 /* Header */
-header {
-    margin-bottom: 30px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 20px;
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-h1 {
-    font-size: 24px;
-    margin-top: 10px;
-}
-
-.user-stats {
-    display: flex;
-    gap: 15px;
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-.stat-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.xp-bar-container {
-    width: 100%;
-    height: 4px;
-    background: #f3f4f6;
-    margin-top: 10px;
-    border-radius: 2px;
-}
-
-.xp-bar-fill {
-    height: 100%;
-    background: var(--primary-color);
-    width: 0%;
-    transition: width 0.3s;
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
 /* Input Section */
 .input-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.input-wrapper {
-    flex: 1;
-    position: relative;
+    gap: 12px;
+    align-items: center;
 }
 
 #task-input {
-    width: 100%;
-    padding: 10px 15px;
+    flex: 1;
+    padding: 12px 16px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 8px;
+    /* Rounded edges */
+    font-size: 1rem;
+    color: var(--text-primary);
     outline: none;
+    transition: border-color var(--transition-speed);
+    background: transparent;
 }
 
 #task-input:focus {
-    border-color: var(--primary-color);
+    border-color: var(--accent-color);
 }
 
-#voice-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
+#task-input::placeholder {
+    color: #94a3b8;
+}
+
+.date-input {
     border: none;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
     cursor: pointer;
-    color: var(--text-muted);
+    background: transparent;
+    width: 24px;
+    /* Hide text, just show icon usually or keep minimal */
+    overflow: hidden;
+    padding: 0;
 }
 
+/* Tweaking date input to be minimal - just an icon effectively */
+.date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+
+/* Add Button */
 .primary-btn {
     padding: 10px 20px;
-    background-color: var(--primary-color);
+    background-color: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
+    /* Small rounded */
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color var(--transition-speed), transform 0.1s;
 }
 
 .primary-btn:hover {
-    background-color: #1d4ed8;
+    background-color: var(--accent-hover);
 }
 
-/* Filter Section */
-.filter-section {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-}
-
-.filter-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 14px;
-    padding-bottom: 5px;
-}
-
-.filter-btn.active {
-    color: var(--primary-color);
-    font-weight: 600;
+.primary-btn:active {
+    transform: scale(0.98);
+    /* Soft press feel */
 }
 
 /* Task List */
 .task-list {
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Spacing instead of lines */
 }
 
 .task-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
+    /* Center vertically */
+    gap: 16px;
+    padding: 4px 0;
+    background: transparent;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
+/* Custom Checkbox */
+.task-checkbox-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.task-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    /* Light border */
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    position: relative;
+}
+
+.task-checkbox:checked {
+    background-color: var(--border-color);
+    /* Subtle fill */
+    border-color: var(--border-color);
+}
+
+.task-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 9px;
+    width: 6px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: none;
+    /* Let's keep it super minimal, maybe just color change? Or checkmark. */
+    display: block;
+    /* Brief says "smooth transition", let's show checkmark */
+}
+
 
 .task-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
 }
 
 .task-text {
-    font-size: 16px;
-}
-
-.task-item.completed .task-text {
-    text-decoration: line-through;
-    color: var(--text-muted);
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: color 0.3s;
 }
 
 .task-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
+/* Completed State */
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #cbd5e1;
+    /* Lighter gray */
+}
+
+.task-item.completed {
+    opacity: 0.6;
+    /* Slight opacity reduction */
+}
+
+/* Actions */
 .task-actions {
     display: flex;
-    gap: 5px;
+    gap: 8px;
+    opacity: 0;
+    /* Hidden by default */
+    transition: opacity 0.2s;
+}
+
+.task-item:hover .task-actions {
+    opacity: 1;
+    /* Show on hover */
 }
 
 .icon-btn {
     background: none;
     border: none;
+    color: var(--text-secondary);
     cursor: pointer;
-    color: var(--text-muted);
-    padding: 5px;
+    padding: 6px;
+    border-radius: 6px;
+    transition: color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-btn:hover {
-    color: var(--text-main);
+    color: var(--text-primary);
+    background-color: #f1f5f9;
 }
 
-.task-checkbox {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+.icon-btn.delete-trigger:hover {
+    color: var(--danger-color);
+    background-color: #fef2f2;
 }
+
+
+/* Footer Controls */
+.footer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 20px;
+    border-top: 1px solid transparent;
+    /* No lines per brief, but keeping structure */
+}
+
+.filter-section {
+    display: flex;
+    gap: 4px;
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+    background-color: #f1f5f9;
+}
+
+.filter-btn.active {
+    color: var(--accent-color);
+    background-color: #f1f5f9;
+}
+
 
 /* Empty State */
 .empty-state {
     text-align: center;
-    color: var(--text-muted);
-    margin-top: 40px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 20px 0;
 }
 
 .hidden {
     display: none !important;
 }
 
-/* Focus Mode */
-.focus-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+/* Focus Overlay Helper */
+.focus-trigger .material-icons-round {
+    font-size: 18px;
 }
 
-.focus-content {
-    text-align: center;
-    max-width: 400px;
-}
-
-.timer-display {
-    font-size: 60px;
-    font-weight: bold;
-    margin: 30px 0;
-    color: var(--text-main);
-}
-
-.focus-btn {
-    padding: 10px 25px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    margin: 5px;
-}
-
-.focus-btn.secondary {
-    background: #f3f4f6;
-    color: var(--text-main);
-}
-
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 24px;
+.delete-trigger .material-icons-round {
+    font-size: 18px;
 }
 
 /* Date Input */
