@@ -14,40 +14,180 @@
 </head>
 
 <body>
-    <div class="app-container">
-        <header>
-            <h1>To-Do</h1>
-        </header>
-
-        <div class="input-section">
-            <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
-            <input type="datetime-local" id="task-deadline" class="date-input" title="Set Deadline">
-            <button id="add-btn" class="primary-btn">Add</button>
-        </div>
-
-        <ul id="task-list" class="task-list">
-            <!-- Tasks will be injected here -->
-        </ul>
-
-        <div id="empty-state" class="empty-state hidden">
-            <p>No tasks yet.</p>
-        </div>
-
-        <!-- Subtle Footer Controls -->
-        <div class="footer-controls">
-            <button id="calendar-btn" class="icon-btn" title="Calendar">
-                <span class="material-icons-round">calendar_today</span>
-            </button>
-            <button id="voice-btn" class="icon-btn" title="Voice Input">
-                <span class="material-icons-round">mic</span>
-            </button>
-            <div class="filter-section">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="active">Active</button>
-                <button class="filter-btn" data-filter="completed">Completed</button>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="material-icons-round">check_circle</span>
+                <h2>TaskDash</h2>
             </div>
-        </div>
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard">
+                    <span class="material-icons-round">dashboard</span> Dashboard
+                </li>
+                <li data-view="tasks">
+                    <span class="material-icons-round">list</span> My Tasks
+                </li>
+                <li data-view="calendar">
+                    <span class="material-icons-round">calendar_today</span> Calendar
+                </li>
+                <li data-view="analytics">
+                    <span class="material-icons-round">pie_chart</span> Analytics
+                </li>
+                <li data-view="focus">
+                    <span class="material-icons-round">timer</span> Focus Mode
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="welcome-text">
+                    <h1 id="greeting">Good Morning, User</h1>
+                    <p id="current-date-display">Monday, October 24</p>
+                </div>
+                <div class="top-actions">
+                    <button id="global-add-btn" class="primary-btn">
+                        <span class="material-icons-round">add</span> New Task
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar">U</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Grid -->
+            <div id="view-dashboard" class="view-section active">
+                <div class="dashboard-grid">
+                    <!-- Stats Cards -->
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+                            <span class="material-icons-round">assignment</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total Tasks</h3>
+                            <p id="total-tasks-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #dcfce7; color: #16a34a;">
+                            <span class="material-icons-round">check_circle</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Completed</h3>
+                            <p id="completed-tasks-count">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fae8ff; color: #a855f7;">
+                            <span class="material-icons-round">trending_up</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Productivity</h3>
+                            <p id="completion-rate">0%</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">
+                            <span class="material-icons-round">warning</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Pending</h3>
+                            <p id="pending-tasks-count">0</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="chart-container wide">
+                        <h3>Weekly Activity</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Task Distribution</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+
+                    <!-- Recent Tasks (Mini List) -->
+                    <div class="widget-card wide">
+                        <div class="widget-header">
+                            <h3>Recent Tasks</h3>
+                            <a href="#" id="view-all-tasks">View All</a>
+                        </div>
+                        <ul id="dashboard-task-list" class="task-list simplified">
+                            <!-- Injected Tasks -->
+                        </ul>
+                    </div>
+
+                    <!-- Widgets -->
+                    <div class="widget-card">
+                        <h3>Quote of the Day</h3>
+                        <blockquote id="daily-quote">
+                            "The secret of getting ahead is getting started."
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task View (Full List) -->
+            <div id="view-tasks" class="view-section hidden">
+                <div class="task-controls">
+                    <div class="input-group">
+                        <input type="text" id="task-input" placeholder="What needs to be done?" autocomplete="off">
+                        <select id="task-category" class="category-select">
+                            <option value="Personal">Personal</option>
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                            <option value="Shopping">Shopping</option>
+                        </select>
+                        <input type="datetime-local" id="task-deadline" class="date-input">
+                        <button id="add-task-btn" class="primary-btn">Add Task</button>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                    </div>
+                </div>
+                <ul id="full-task-list" class="task-list">
+                    <!-- Full Task List -->
+                </ul>
+            </div>
+
+            <!-- Calendar Container -->
+            <div id="view-calendar" class="view-section hidden">
+                <div id="calendar-container">
+                    <!-- Calendar injected here via JS -->
+                    <div class="calendar-header-large">
+                        <h2 id="calendar-month-year-large">Month Year</h2>
+                        <div class="calendar-nav">
+                            <button id="prev-month-large" class="icon-btn"><span
+                                    class="material-icons-round">chevron_left</span></button>
+                            <button id="next-month-large" class="icon-btn"><span
+                                    class="material-icons-round">chevron_right</span></button>
+                        </div>
+                    </div>
+                    <div id="large-calendar-grid" class="large-calendar-grid"></div>
+                </div>
+            </div>
+
+            <!-- Focus Mode View -->
+            <div id="view-focus" class="view-section hidden">
+                <div class="focus-center">
+                    <div class="timer-circle">
+                        <span id="focus-timer-display">25:00</span>
+                        <p id="focus-status">Ready to Focus?</p>
+                    </div>
+                    <button id="start-focus-btn" class="primary-btn large">Start Session</button>
+                </div>
+            </div>
+
+        </main>
     </div>
+
+    <!-- Hidden Elements for Logic -->
+    <div id="calendar-modal" class="modal hidden"></div> <!-- Keeping for backward compatibility or removing -->
 
     <!-- Calendar Modal -->
     <div id="calendar-modal" class="modal hidden">
