@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovative To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-top">
+                <div class="date-display">
+                    <span id="current-day">Monday</span>
+                    <span id="current-date">October 24</span>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item" id="level-display" title="Current Level">
+                        <span class="stat-label">LVL</span>
+                        <span class="stat-value" id="level-value">1</span>
+                    </div>
+                    <div class="stat-item" id="streak-display" title="Daily Streak">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-value" id="streak-value">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="xp-bar-container" title="XP Progress">
+                <div class="xp-bar-fill" id="xp-bar" style="width: 0%"></div>
+            </div>
+            <h1>My Tasks</h1>
+        </header>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
+                <button id="voice-btn" class="icon-btn" title="Voice Input">
+                    <span class="material-icons-round">mic</span>
+                </button>
+            </div>
+            <button id="add-btn" class="primary-btn">
+                <span class="material-icons-round">add</span>
+            </button>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+
+        <ul id="task-list" class="task-list">
+            <!-- Tasks will be injected here -->
+        </ul>
+        
+        <div id="empty-state" class="empty-state hidden">
+            <span class="material-icons-round">assignment_turned_in</span>
+            <p>All cleaned up! Take a break.</p>
+        </div>
+    </div>
+
+    <!-- Focus Mode Overlay -->
+    <div id="focus-overlay" class="focus-overlay hidden">
+        <div class="focus-content">
+            <div class="focus-header">
+                <h2>Focus Mode</h2>
+                <button id="close-focus-btn" class="icon-btn close-btn">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="focus-task-display">
+                <h3 id="focus-task-text">Complete the design mockups</h3>
+            </div>
+            <div class="timer-display">
+                <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
+            </div>
+            <div class="focus-controls">
+                <button id="start-timer-btn" class="focus-btn">Start Focus</button>
+                <button id="pause-timer-btn" class="focus-btn hidden">Pause</button>
+                <button id="reset-timer-btn" class="focus-btn secondary">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
