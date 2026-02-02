@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     let currentFilter = 'all';
+    let currentCalendarDate = new Date(); // Restored logic variable
 
     // --- Initialization ---
     initDashboard();
@@ -70,8 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Refresh specific views
                 if (viewId === 'dashboard') {
                     updateStats();
-                    updateCharts();
+                    updateCharts(); // Render main dashboard charts
                     renderRecentTasks();
+                } else if (viewId === 'calendar') {
+                    renderCalendar(); // Explicitly render calendar when tab is opened
+                } else if (viewId === 'analytics') {
+                    // Re-render specific analytics charts if we were to have a separate page for them
+                    // For now, the dashboard has the charts, but let's make sure they are updated if we have a view for them
+                    updateCharts();
                 }
             });
         });
@@ -80,13 +87,18 @@ document.addEventListener('DOMContentLoaded', () => {
         addTaskBtn.addEventListener('click', handleAddTask);
         globalAddBtn.addEventListener('click', () => {
             // Quick switch to tasks view and focus input
-            document.querySelector('[data-view="tasks"]').click();
+            const taskLink = document.querySelector('[data-view="tasks"]');
+            if (taskLink) taskLink.click();
             taskInput.focus();
         });
 
         taskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleAddTask();
         });
+
+        // Calendar Navigation (New IDs)
+        document.getElementById('prev-month-large')?.addEventListener('click', () => changeMonth(-1));
+        document.getElementById('next-month-large')?.addEventListener('click', () => changeMonth(1));
     }
 
     function handleAddTask() {
@@ -131,6 +143,75 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
         updateStats();
         updateCharts();
+    }
+
+    // --- Calendar ---
+    // Removed old modal open/close functions as we are using the full view now
+
+    function changeMonth(delta) {
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        // Target the NEW large calendar elements
+        const monthYearEl = document.getElementById('calendar-month-year-large');
+        const calendarGridEl = document.getElementById('large-calendar-grid');
+
+        if (!monthYearEl || !calendarGridEl) return;
+
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+
+        monthYearEl.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+        calendarGridEl.innerHTML = '';
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Empty cells for previous month
+        for (let i = 0; i < firstDay; i++) {
+            const div = document.createElement('div');
+            div.className = 'calendar-day empty';
+            calendarGridEl.appendChild(div);
+        }
+
+        // Days
+        for (let i = 1; i <= daysInMonth; i++) {
+            const div = document.createElement('div');
+            div.className = 'calendar-day';
+            div.innerHTML = `<span>${i}</span>`;
+
+            // Check if today
+            const today = new Date();
+            if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                div.classList.add('today');
+            }
+
+            // Check for tasks
+            // We need to match precise dates safely
+            const currentCellDate = new Date(year, month, i).toDateString();
+
+            const dayTasks = tasks.filter(t => {
+                if (!t.deadline || t.completed) return false;
+                return new Date(t.deadline).toDateString() === currentCellDate;
+            });
+
+            if (dayTasks.length > 0) {
+                // Show up to 2 dots or a count
+                const dotsContainer = document.createElement('div');
+                dotsContainer.className = 'calendar-dots';
+                dayTasks.slice(0, 3).forEach(t => {
+                    const dot = document.createElement('div');
+                    dot.className = 'has-task-dot';
+                    dot.title = t.text; // Tooltip
+                    dotsContainer.appendChild(dot);
+                });
+                div.appendChild(dotsContainer);
+            }
+
+            calendarGridEl.appendChild(div);
+        }
     }
 
     // --- Rendering ---
@@ -188,31 +269,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCharts() {
-        const ctxActivity = document.getElementById('activityChart').getContext('2d');
-        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        // Dashboard Charts
+        const ctxActivity = document.getElementById('activityChart')?.getContext('2d');
+        const ctxCategory = document.getElementById('categoryChart')?.getContext('2d');
 
-        // Prepare Data for Category Chart
+        // Analytics Page Charts
+        const ctxAnalyticsActivity = document.getElementById('analyticsActivityChart')?.getContext('2d');
+        const ctxAnalyticsCategory = document.getElementById('analyticsCategoryChart')?.getContext('2d');
+
+        // Prepare Data
         const categories = {};
         tasks.forEach(t => {
             categories[t.category] = (categories[t.category] || 0) + 1;
         });
-
-        // Prepare Data for Activity Chart (Mock - just showing completed vs pending count)
         const completedData = tasks.filter(t => t.completed).length;
-        const pendingData = tasks.filter(t => !t.completed).length;
 
-        // Destroy old instances if they exist
-        if (activityChartInstance) activityChartInstance.destroy();
-        if (categoryChartInstance) categoryChartInstance.destroy();
-
-        // 1. Weekly Activity (Bar Chart)
-        activityChartInstance = new Chart(ctxActivity, {
+        // Configuration (Reusable)
+        const activityConfig = {
             type: 'bar',
             data: {
                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 datasets: [{
                     label: 'Tasks Completed',
-                    data: [2, 4, 3, 5, completedData, 0, 0], // Mocking history for now + current
+                    data: [2, 4, 3, 5, completedData, 0, 0],
                     backgroundColor: '#3b82f6',
                     borderRadius: 4
                 }]
@@ -223,16 +302,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: { legend: { display: false } },
                 scales: { y: { beginAtZero: true } }
             }
-        });
+        };
 
-        // 2. Category Distribution (Pie Chart)
-        categoryChartInstance = new Chart(ctxCategory, {
+        const categoryConfig = {
             type: 'doughnut',
             data: {
-                labels: Object.keys(categories),
+                labels: Object.keys(categories).length ? Object.keys(categories) : ['None'],
                 datasets: [{
-                    data: Object.values(categories),
-                    backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24'],
+                    data: Object.keys(categories).length ? Object.values(categories) : [1],
+                    backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24', '#e2e8f0'],
                     borderWidth: 0
                 }]
             },
@@ -241,7 +319,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 maintainAspectRatio: false,
                 plugins: { legend: { position: 'bottom' } }
             }
-        });
+        };
+
+        // Render Dashboard Charts
+        if (ctxActivity) {
+            if (activityChartInstance) activityChartInstance.destroy();
+            activityChartInstance = new Chart(ctxActivity, activityConfig);
+        }
+        if (ctxCategory) {
+            if (categoryChartInstance) categoryChartInstance.destroy();
+            categoryChartInstance = new Chart(ctxCategory, categoryConfig);
+        }
+
+        // Render Analytics Page Charts (New Instances)
+        if (ctxAnalyticsActivity) {
+            // We need separate instances or reuse logic. For simplicity, creating new ones.
+            // Note: In a real app, track these instances to destroy them too.
+            // Optimization: Only render if visible.
+            new Chart(ctxAnalyticsActivity, activityConfig);
+        }
+        if (ctxAnalyticsCategory) {
+            new Chart(ctxAnalyticsCategory, categoryConfig);
+        }
     }
 
     function saveData() {

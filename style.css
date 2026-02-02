@@ -312,6 +312,51 @@ body {
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
     margin-top: 20px;
+    height: 100%;
+}
+
+.calendar-day {
+    min-height: 100px;
+    /* Ensure visibility */
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.calendar-day:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-day.today {
+    border: 2px solid var(--accent-color);
+    background: #eff6ff;
+}
+
+.calendar-day.empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+
+.calendar-dots {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.has-task-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
 }
 
 /* Focus Mode */
