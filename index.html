@@ -20,7 +20,7 @@
         <nav class="sidebar">
             <div class="logo">
                 <span class="material-icons-round">check_circle</span>
-                <h2>TaskDash</h2>
+                <h2>Zenith</h2>
             </div>
             <ul class="nav-links">
                 <li class="active" data-view="dashboard">
@@ -55,8 +55,42 @@
                     <div class="user-profile">
                         <div class="avatar">U</div>
                     </div>
+                    <button id="logout-btn" class="icon-btn" title="Logout">
+                        <span class="material-icons-round">logout</span>
+                    </button>
                 </div>
             </header>
+
+            <!-- ... Dashboard View ... -->
+
+            <!-- ... Analytics View ... -->
+
+            <!-- ... Tasks View ... -->
+
+            <!-- Calendar Container -->
+            <div id="view-calendar" class="view-section hidden">
+                <div class="calendar-layout-split">
+                    <div id="calendar-container">
+                        <div class="calendar-header-large">
+                            <h2 id="calendar-month-year-large">Month Year</h2>
+                            <div class="calendar-nav">
+                                <button id="prev-month-large" class="icon-btn"><span
+                                        class="material-icons-round">chevron_left</span></button>
+                                <button id="next-month-large" class="icon-btn"><span
+                                        class="material-icons-round">chevron_right</span></button>
+                            </div>
+                        </div>
+                        <div id="large-calendar-grid" class="large-calendar-grid"></div>
+                    </div>
+                    <!-- New Side Panel for Selected Date Tasks -->
+                    <div id="calendar-details-panel" class="calendar-details-panel">
+                        <h3 id="selected-date-title">Select a Date</h3>
+                        <div id="selected-date-tasks" class="task-list">
+                            <p class="empty-text">Click a date to view tasks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Dashboard Grid -->
             <div id="view-dashboard" class="view-section active">

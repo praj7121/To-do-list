@@ -307,12 +307,37 @@ body {
 }
 
 /* Large Calendar */
+.calendar-layout-split {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    /* Grid takes most space, details panel takes 300px */
+    gap: 20px;
+    height: 100%;
+}
+
+.calendar-details-panel {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+#selected-date-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
 .large-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
     margin-top: 20px;
-    height: 100%;
+    /* Remove fixed height, let it fill */
 }
 
 .calendar-day {
@@ -345,6 +370,12 @@ body {
     cursor: default;
 }
 
+.calendar-day.selected {
+    background: #e0f2fe;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
 .calendar-dots {
     display: flex;
     gap: 4px;
@@ -357,6 +388,13 @@ body {
     height: 6px;
     background-color: var(--accent-color);
     border-radius: 50%;
+}
+
+.empty-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Focus Mode */

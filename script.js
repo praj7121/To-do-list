@@ -21,16 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let categoryChartInstance = null;
 
     // --- State ---
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    // --- State ---
+    let currentUser = localStorage.getItem('zenith_current_user');
+    let tasks = [];
     let currentFilter = 'all';
-    let currentCalendarDate = new Date(); // Restored logic variable
+    let currentCalendarDate = new Date();
 
     // --- Initialization ---
-    initDashboard();
-    renderTasks();
-    updateStats();
-    updateCharts();
     setupEventListeners();
+
+    if (!currentUser) {
+        const overlay = document.getElementById('auth-overlay');
+        if (overlay) overlay.classList.remove('hidden');
+    } else {
+        const overlay = document.getElementById('auth-overlay');
+        if (overlay) overlay.classList.add('hidden');
+        loadData();
+        initDashboard();
+        renderTasks();
+        updateStats();
+        updateCharts();
+        renderRecentTasks();
+    }
 
     // --- Core Functions ---
     function initDashboard() {
@@ -97,8 +109,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Calendar Navigation (New IDs)
+        // Calendar Navigation (New IDs)
         document.getElementById('prev-month-large')?.addEventListener('click', () => changeMonth(-1));
         document.getElementById('next-month-large')?.addEventListener('click', () => changeMonth(1));
+
+        // Auth Logic
+        const authBtn = document.getElementById('auth-login-btn');
+        const authUser = document.getElementById('auth-username');
+
+        if (authBtn) {
+            authBtn.addEventListener('click', () => {
+                const username = authUser.value.trim();
+                if (username) {
+                    currentUser = username;
+                    localStorage.setItem('zenith_current_user', currentUser);
+                    document.getElementById('auth-overlay').classList.add('hidden');
+
+                    tasks = [];
+                    loadData();
+                    initDashboard();
+                    renderTasks();
+                    updateStats();
+                    updateCharts();
+                    renderRecentTasks();
+                }
+            });
+        }
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (confirm('Log out?')) {
+                    localStorage.removeItem('zenith_current_user');
+                    location.reload();
+                }
+            });
+        }
     }
 
     function handleAddTask() {
@@ -344,6 +390,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveData() {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+        if (!currentUser) return; // Don't save if not logged in
+        localStorage.setItem(`zenith_tasks_${currentUser}`, JSON.stringify(tasks));
+    }
+
+    function loadData() {
+        if (!currentUser) return;
+        tasks = JSON.parse(localStorage.getItem(`zenith_tasks_${currentUser}`)) || [];
     }
 });
